@@ -1,45 +1,50 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
-  </head>
-  <body style="margin: 0; overflow: hidden;">
-    <a-scene embedded arjs>
-      <!-- Marker -->
-      <a-marker preset="hiro">
-        <!-- 3D Model -->
-        <a-box
-          id="draggable-box"
-          position="0 0.5 0"
-          rotation="0 45 0"
-          color="#4CC3D9"
-          draggable></a-box>
-      </a-marker>
-      <a-entity camera></a-entity>
-    </a-scene>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebXR Cone Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/three@latest/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@latest/examples/js/webxr/VRButton.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+  <script>
+    // Setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 1.6, 3); // Position the camera
 
-    <script>
-      // Drag-and-drop functionality
-      const box = document.getElementById('draggable-box');
-      let isDragging = false;
+    // Renderer with WebXR enabled
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.xr.enabled = true; // Enable WebXR
+    document.body.appendChild(renderer.domElement);
 
-      let startPos = null;
+    // Add VR Button
+    document.body.appendChild(VRButton.createButton(renderer));
 
-      box.addEventListener('mousedown', (event) => {
-        isDragging = true;
-        startPos = event.detail.intersection.point; // Get initial touch position
+    // Create a cone
+    const geometry = new THREE.ConeGeometry(0.5, 1, 32);
+    const material = new THREE.MeshPhongMaterial({ color: 0xff6347 });
+    const cone = new THREE.Mesh(geometry, material);
+    cone.position.set(0, 0.5, -2); // Place the cone in front of the camera
+    scene.add(cone);
+
+    // Add lighting
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(1, 1, 1).normalize();
+    scene.add(light);
+
+    // Animation loop
+    function animate() {
+      renderer.setAnimationLoop(() => {
+        cone.rotation.y += 0.01; // Rotate the cone
+        renderer.render(scene, camera);
       });
+    }
 
-      window.addEventListener('mousemove', (event) => {
-        if (isDragging) {
-          const scene = document.querySelector('a-scene');
-          const camera = document.querySelector('[camera]');
-          const raycaster = camera.components.raycaster;
-          
-          // Get raycaster from camera
-          const newPoint = raycaster.getIntersection(box).point; // new intersection
-          box.setAttribute('position', newPostion pt)
-          
-        });
-</script
+    animate();
+  </script>
+</body>
+</html>
