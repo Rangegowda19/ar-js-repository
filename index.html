@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
+  </head>
+  <body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs>
+      <!-- Marker -->
+      <a-marker preset="hiro">
+        <!-- 3D Model -->
+        <a-box
+          id="draggable-box"
+          position="0 0.5 0"
+          rotation="0 45 0"
+          color="#4CC3D9"
+          draggable></a-box>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      // Drag-and-drop functionality
+      const box = document.getElementById('draggable-box');
+      let isDragging = false;
+
+      let startPos = null;
+
+      box.addEventListener('mousedown', (event) => {
+        isDragging = true;
+        startPos = event.detail.intersection.point; // Get initial touch position
+      });
+
+      window.addEventListener('mousemove', (event) => {
+        if (isDragging) {
+          const scene = document.querySelector('a-scene');
+          const camera = document.querySelector('[camera]');
+          const raycaster = camera.components.raycaster;
+          
+          // Get raycaster from camera
+          const newPoint = raycaster.getIntersection(box).point; // new intersection
+          box.setAttribute('position', newPostion pt)
+          
+        });
+</script
